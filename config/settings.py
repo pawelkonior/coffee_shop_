@@ -12,24 +12,26 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
+import dj_database_url
+import environ
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environ.Env.read_env(os.path.join(BASE_DIR, 'envs', '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#9zk-7t^5^lbrd($x%m^8s43wk#jm=zvf#zvb$yaoe+m1z(kl!'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split()
 
-INTERNAL_IPS = [
-    '127.0.0.1', 'localhost'
-]
+INTERNAL_IPS = ALLOWED_HOSTS
 
 
 # Application definition
@@ -92,6 +94,12 @@ DATABASES = {
     }
 }
 
+DATABASE_CONNECTION_STRING = os.environ.get('DB_CONNECTION_STRING', None)
+
+if DATABASE_CONNECTION_STRING:
+    db_config = dj_database_url.config(default=DATABASE_CONNECTION_STRING, conn_max_age=500, ssl_require=False)
+    DATABASES['default'].update(db_config)
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -136,3 +144,10 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    "version": 1,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {"django.db.backends": {"level": "DEBUG"}},
+    "root": {"handlers": ["console"]},
+}

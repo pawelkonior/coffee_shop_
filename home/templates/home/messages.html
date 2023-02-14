@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    - Messages
+{% endblock %}
+
+{% block container %}
+    <h1>Messages:</h1>
+
+    <div class="accordion" id="accordionExample">
+        {% for message in messages %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="true"
+                            aria-controls="collapseOne">
+                        {{ message }}
+                    </button>
+                </h2>
+                <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                     data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        {{ message.message }}
+                        <a href="{% url 'home:message' pk=message.pk %}" class="btn btn-success">Details</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <h2>Something is no yes!</h2>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block aside %}
+    <h2>Customers:</h2>
+    <ul class="list-group list-group-flush">
+        {% for message in messages %}
+            <li class="list-group-item">{{ message.name }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+

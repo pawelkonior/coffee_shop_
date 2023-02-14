@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    - {{ message.name }}
+{% endblock %}
+
+{% block container %}
+
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">{{ message.name }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Message:</h6>
+            <p class="card-text">{{ message.message }}</p>
+            <p class="card-text">{{ message.email }}</p>
+        </div>
+    </div>
+    <a href="{% url 'home:messages' %}" class="btn btn-primary mt-3">All messages</a>
+    <a href="{% url 'home:messages' %}" class="btn btn-warning mt-3">Edit</a>
+    <a href="{% url 'home:message_delete' pk=message.pk %}" class="btn btn-danger mt-3">Delete</a>
+
+{% endblock %}
+
